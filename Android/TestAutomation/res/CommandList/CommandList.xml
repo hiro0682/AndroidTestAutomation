@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE CommandList[
+	<!ELEMENT CommandList (Command+)>
+	<!ELEMENT Command (Class,input_n, input, Instruction)>
+	<!ATTLIST Command id ID #REQUIRED>
+	<!ELEMENT Class (#PCDATA)>
+	<!ELEMENT input (#PCDATA)>
+	<!ELEMENT input_n (#PCDATA)>
+	<!ELEMENT Instruction (#PCDATA)>
+]>
+
+<CommandList>
+
+	<Command id="tap">
+		<Class>AndroidTest</Class>
+		<input_n >2</input_n>
+		<input >x_axis,y_axis</input>
+		<Instruction >Send tap event via ADB</Instruction>
+	</Command>
+	
+	<Command id="long_tap">
+		<Class>AndroidTest</Class>	
+		<input_n>3</input_n>
+		<input >x_axis,y_axis,time</input>
+		<Instruction>Send long tap event via ADB</Instruction>
+	</Command>
+	
+	<Command id="swipe">
+		<Class>AndroidTest</Class>
+		<input_n>5</input_n>
+		<input>x_axis,y_axis,dx_axis,dy_axis,time</input>
+		<Instruction>Send swipe event via ADB</Instruction>
+	</Command>
+	
+	<Command id="sleep">
+		<Class>AndroidTest</Class>
+		<input_n>1</input_n>
+		<input>time</input>
+		<Instruction>Wait for the specified time</Instruction>
+	</Command>
+	
+	<Command id="verify_image">
+		<Class>AndroidTest</Class>
+		<input_n>1</input_n>
+		<input>image_URI</input>
+		<Instruction></Instruction>
+	</Command>
+
+</CommandList>

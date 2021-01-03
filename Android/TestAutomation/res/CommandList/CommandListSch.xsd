@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/CommandListSch" xmlns:tns="http://www.example.org/CommandListSch" elementFormDefault="qualified">
+<element name="CommandList">
+	<complexType>
+		<sequence>
+			<element name="Command">
+				<complexType>
+					<sequence>
+						<element name="input_n" type="string"/>
+						<element name="input" type="string"/>
+						<element name="Instruction" type="string"/>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	<attribute name="id" type="string" use="required"/>
+	</complexType>
+</element>
+</schema>
