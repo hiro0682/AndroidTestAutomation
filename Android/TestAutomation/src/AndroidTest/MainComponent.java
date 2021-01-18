@@ -10,20 +10,19 @@ public class MainComponent {
 	private final static int EXECUTE_TEST = 3;
 	private final static int SHOW_TESTCASE = 4;
 	private final static int END_PROG = 5;
+	
 	private final static int ACTION_TAP = 1;
 	private final static int ACTION_LONGTAP = 2;
 	private final static int ACTION_SWIPE = 3;
 	private final static int ACTION_SLEEP = 4;
 	private final static int END_EDITACTION = 5;
 	public static ActionList actionList;
-	private static ActionExecuter actionExecuter;
-	private static Map<String, String> commandList;
 	
 	public static void main(String[] args) {
-		actionList = new ActionList();
-		actionExecuter = new ActionExecuter();
-		commandList = new HashMap<String,String>();
-		while(executeAction(selectAction()));
+		ActionExecuter test = new ActionExecuter();
+		System.out.println(test.execVerify("res/image/get/", "20211181116.png"));
+		//actionList = new ActionList();
+		//while(executeAction(selectAction()));
 	}
 	
 	private static void init_commandList(Map<String,String> actionData) {
@@ -77,6 +76,7 @@ public class MainComponent {
 		int x_axis, y_axis, dx_axis, dy_axis;
 		int time;
 		boolean flag = true;
+		Map<String,String> commandList = new HashMap<String,String>();
 		while(flag) {
 			init_commandList(commandList);
 			System.out.println("Select an action."
@@ -156,8 +156,9 @@ public class MainComponent {
 	}
 	
 	private static void executeTest() {
+		ActionExecuter actionExecuter = new ActionExecuter();
 		if(actionList != null) {
-			actionExecuter.execute(actionList.getActionList());
+			actionExecuter.executeList(actionList.getActionList());
 		}
 		System.out.println("Succeed in executing test case");
 	}

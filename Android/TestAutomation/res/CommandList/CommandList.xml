@@ -46,5 +46,12 @@
 		<input>image_URI</input>
 		<Instruction></Instruction>
 	</Command>
+	
+	<Command id="capture_image">
+		<Class>AndroidTest</Class>
+		<input_n>0</input_n>
+		<input></input>
+		<Instruction>Capture image and return saved URI</Instruction>
+	</Command>
 
 </CommandList>
