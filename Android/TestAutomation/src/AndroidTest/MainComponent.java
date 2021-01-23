@@ -15,14 +15,21 @@ public class MainComponent {
 	private final static int ACTION_LONGTAP = 2;
 	private final static int ACTION_SWIPE = 3;
 	private final static int ACTION_SLEEP = 4;
-	private final static int END_EDITACTION = 5;
+	private final static int ACTION_VERIFY = 5;
+	private final static int ACTION_IMAGETAP = 6;
+	private final static int ACTION_CAPTURE = 7;
+	private final static int END_EDITACTION = 8;
 	public static ActionList actionList;
 	
-	public static void main(String[] args) {
-		ActionExecuter test = new ActionExecuter();
-		System.out.println(test.execVerify("res/image/get/", "20211181116.png"));
-		//actionList = new ActionList();
-		//while(executeAction(selectAction()));
+	
+	public static void main(String[] args) throws InterruptedException {
+		
+		
+		//ActionExecuter test = new ActionExecuter();
+		//System.out.println(test.tapImage("res/image/get/", "2021122015.png"));
+		
+		actionList = new ActionList();
+		while(executeAction(selectAction()));
 	}
 	
 	private static void init_commandList(Map<String,String> actionData) {
@@ -75,6 +82,7 @@ public class MainComponent {
 		int action;
 		int x_axis, y_axis, dx_axis, dy_axis;
 		int time;
+		String path,im_name;
 		boolean flag = true;
 		Map<String,String> commandList = new HashMap<String,String>();
 		while(flag) {
@@ -84,8 +92,11 @@ public class MainComponent {
 					+ "\n2.Long tap"
 					+ "\n3.Swipe"
 					+ "\n4.Sleep"
-					+ "\n5.End adding action.");
-			action = receiveInt(5);
+					+ "\n5.Verify Image"
+					+ "\n6.Tap image"
+					+ "\n7.Capture image"
+					+ "\n8.End adding action.");
+			action = receiveInt(8);
 			switch(action) {
 			case ACTION_TAP:
 				System.out.println("Input X axis.");
@@ -140,6 +151,30 @@ public class MainComponent {
 				commandList.put("time", String.valueOf(time));
 				actionList.addAction(commandList);
 				break;
+			case ACTION_VERIFY:
+				System.out.println("Input image path.");
+				path = receiveStr();
+				System.out.println("Input image name.");
+				im_name = receiveStr();
+				commandList.put("action", "verify_image");
+				commandList.put("data1", path);
+				commandList.put("data2", im_name);
+				actionList.addAction(commandList);
+				break;
+			case ACTION_IMAGETAP:
+				System.out.println("Input image path.");
+				path = receiveStr();
+				System.out.println("Input image name.");
+				im_name = receiveStr();
+				commandList.put("action", "tap_image");
+				commandList.put("data1", path);
+				commandList.put("data2", im_name);
+				actionList.addAction(commandList);
+				break;
+			case ACTION_CAPTURE:
+				commandList.put("action", "capture_image");
+				actionList.addAction(commandList);
+				break;
 			case END_EDITACTION:
 				System.out.println("End action edit...");
 				flag = false;
@@ -185,6 +220,19 @@ public class MainComponent {
 			}
 			System.out.println("Max value is"+ max_val);
 		}	
+	}
+	
+	private static String receiveStr() {
+		String str = "";
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		try {
+			scanner.reset();
+			str = scanner.next();
+		}catch(Exception e) {
+			System.out.println("Please input int value");
+		}
+		return str;
 	}
 
 }

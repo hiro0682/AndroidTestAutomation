@@ -20,6 +20,7 @@ public class ActionList {
     private Element command;
     private Document commandList;
     private String[] inputList;
+    private int numInput;
     
      
 	public ActionList() {
@@ -34,6 +35,8 @@ public class ActionList {
 		actionData.put("dx_axis", null);
 		actionData.put("dy_axis", null);
 		actionData.put("time", null);
+		actionData.put("data1", null);
+		actionData.put("data2", null);
 	}
 	
 	private void init_actionList(ArrayList<Map<String,String>> actionList) {
@@ -49,8 +52,9 @@ public class ActionList {
 		}
 		actionData.put("action", inputAction.get("action"));
 		inputList = command.getElementsByTagName("input").item(0).getTextContent().split(",");
+		numInput = Integer.parseInt(command.getElementsByTagName("input_n").item(0).getTextContent());
 		System.out.println(inputList[0]);
-		for (int i = 0 ; i < inputList.length ; i++) {
+		for (int i = 0 ; i < numInput ; i++) {
 			if (inputAction.get(inputList[i]) == null ) {
 				System.out.println("Required input item is Null!");
 				return;

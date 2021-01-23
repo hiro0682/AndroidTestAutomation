@@ -11,7 +11,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Core.MinMaxLocResult;
 
 public class ActionExecuter {
 	static Runtime runtime = Runtime.getRuntime();
@@ -20,13 +19,9 @@ public class ActionExecuter {
 	}
 	static Process process;
 	LocalDateTime time = null;
-	
+	LogManager Log = new LogManager();
 	
 	public ActionExecuter() {
-		init();
-	}
-	
-	private static void init() {
 		try {
 			process = runtime.exec("adb start server");
 			process.waitFor();
@@ -37,10 +32,12 @@ public class ActionExecuter {
 			System.out.println("Error!");
 			e.printStackTrace();
 		}
+		
 	}
 	
     public void executeList(ArrayList<Map<String,String>> arrayList) {
     	System.out.println("test");
+    	Log.init_logList();
     	if(arrayList == null) {
     		System.out.println("There is no data in ActionList");
     		return;
@@ -48,36 +45,69 @@ public class ActionExecuter {
     	for(int i = 0 ; i < arrayList.size() ; i++) {
     		execCommand(arrayList.get(i));
     	}
+    	for(int j = 0 ; j < Log.logList.size() ; j++) {
+    		System.out.println(Log.logList.get(j).get("message"));
+    	}
     	process.destroy();
     }
     
     private void execCommand(Map<String, String> actionItem) {
+    	int x,y,dx,dy,time;
+    	String data1,data2;
     	switch(actionItem.get("action")) {
     	case "tap":
-    		execTap(Integer.parseInt(actionItem.get("x_axis")), Integer.parseInt(actionItem.get("y_axis")));
+    		x = Integer.parseInt(actionItem.get("x_axis"));
+    		y = Integer.parseInt(actionItem.get("y_axis"));
+    		tap(x,y);
+    		Log.addLog("tap x:" + x + " y:" + y, null);
     		break;
     	case "long_tap":
-    		execLongTap(Integer.parseInt(actionItem.get("x_axis")), Integer.parseInt(actionItem.get("y_axis")), Integer.parseInt(actionItem.get("time")));
+    		x = Integer.parseInt(actionItem.get("x_axis"));
+    		y = Integer.parseInt(actionItem.get("y_axis"));
+    		time = Integer.parseInt(actionItem.get("time"));
+    		longTap(x, y, time);
+    		Log.addLog("long tap x:" + x + " y:" + y +" for "+ time + "seconds", null);
     		break;
     	case "swipe":
-    		execSwipe(Integer.parseInt(actionItem.get("x_axis")), Integer.parseInt(actionItem.get("y_axis")), 
-    				Integer.parseInt(actionItem.get("dx_axis")), Integer.parseInt(actionItem.get("dy_axis")), Integer.parseInt(actionItem.get("time")));
+    		x = Integer.parseInt(actionItem.get("x_axis"));
+    		y = Integer.parseInt(actionItem.get("y_axis"));
+    		dx = Integer.parseInt(actionItem.get("dx_axis"));
+    		dy = Integer.parseInt(actionItem.get("dy_axis"));
+    		time = Integer.parseInt(actionItem.get("time"));
+    		swipe(x, y, dx, dy, time);
+    		Log.addLog("swipe from x:" + x + " y:" + y + " to x:"+ (x+dx) + " y:" + (y+dy) + " in "+ time/1000 + "seconds", null);
     		break;
     	case "sleep":
-    		execSleep(Integer.parseInt(actionItem.get("time")));
+    		time = Integer.parseInt(actionItem.get("time"));
+    		sleep(time);
+    		Log.addLog("sleep for " + time/1000 + " seconds", null);
     		break;
     	case "verify_image":
-    		execVerify(actionItem.get("x_axis"), actionItem.get("y_axis"));
+    		data1 = actionItem.get("data1");
+    		data2 = actionItem.get("data2");
+    		if (verifyImage(data1, data2)) {
+    			Log.addLog("image " + data2 + "found.", null); 
+    		}
+    		else Log.addLog("image " + data2 + " was not found.", null); 		
+    		break;
+    	case "tap_image":
+    		data1 = actionItem.get("data1");
+    		data2 = actionItem.get("data2");
+    		if(tapImage(data1, data2)) {
+    			Log.addLog("tap image " + data2, null); 	
+    		}
+    		else Log.addLog("can't find image" + data2, null); 	
     		break;
     	case "capture_image":
-    		execCap();
+    		data1 = capture();
+    		Log.addLog("screen saved as" + data1, null);
     		break;
     	default:
     		break;
     	}
     }
-    
-    private void execTap(int x_axis, int y_axis) {
+
+    private void tap(int x_axis, int y_axis) {
     	try {
 			process = runtime.exec("adb shell input touchscreen tap " + x_axis + " " +y_axis);
 			System.out.println("adb shell input touchscreen tap " + x_axis + " " +y_axis);
@@ -91,7 +121,7 @@ public class ActionExecuter {
 		}
     }
     
-    private void execLongTap(int x_axis, int y_axis, int time) {
+    private void longTap(int x_axis, int y_axis, int time) {
     	try {
 			process = runtime.exec("adb shell input swipe " + x_axis + " " + y_axis + " "  + x_axis + " " + y_axis + " " + time);
 			System.out.println("adb shell input swipe " + x_axis + " " + y_axis + " "  + x_axis + " " + y_axis + " " + time);
@@ -105,7 +135,7 @@ public class ActionExecuter {
 		}
     }
     
-    private void execSwipe(int x_axis, int y_axis, int dx_axis, int dy_axis, int time) {
+    private void swipe(int x_axis, int y_axis, int dx_axis, int dy_axis, int time) {
     	try {
 			process = runtime.exec("adb shell input swipe " + x_axis + " " + y_axis + " "  + (x_axis+dx_axis) + " " + (y_axis+dy_axis) + " " + time*100);
 			System.out.println("adb shell input swipe " + x_axis + " " + y_axis + " "  + (x_axis+dx_axis) + " " + (y_axis+dy_axis) + " " + time*100);
@@ -119,7 +149,7 @@ public class ActionExecuter {
     	}
     }
     
-    private void execSleep(int time) {
+    private void sleep(int time) {
     	try {
     	 Thread.sleep(time * 1000);
     	 System.out.println("Sleep " + time +" sec");
@@ -127,21 +157,58 @@ public class ActionExecuter {
     	}
     }
     
-    public  boolean execVerify(String uri_correct, String correct_name) {
+    public boolean verifyImage(String uri_correct, String correct_name) {
     	Mat im = null;
     	Mat tmp = null;
     	Mat result = new Mat(new Size(1, 1), CvType.CV_32F);
-    	String uri = execCap();
-    	System.out.println(uri);
+  
+    	String uri = capture();
+    	
     	im = Imgcodecs.imread(uri);
     	tmp = Imgcodecs.imread(uri_correct+correct_name);
-    	Imgproc.matchTemplate(im, tmp, result, Imgproc.TM_CCOEFF);
-    	MinMaxLocResult mmr = Core.minMaxLoc(result);
-    	if (mmr.maxVal > 0.8) return true;
-    	else return false;	
+    	
+    	Imgproc.matchTemplate(im, tmp, result, Imgproc.TM_CCOEFF_NORMED);   	
+    	Core.MinMaxLocResult mmr = Core.minMaxLoc(result);
+    	
+    	System.out.println(mmr.maxVal);
+        
+    	if (mmr.maxVal > 0.9) return true;
+    	return false;	
     }
     
-    public String execCap() {
+    public int[] findImage(String uri_correct, String correct_name) {
+    	Mat im = null;
+    	Mat tmp = null;
+    	Mat result = new Mat(new Size(1, 1), CvType.CV_32F);
+  
+    	String uri = capture();
+    	
+    	im = Imgcodecs.imread(uri);
+    	tmp = Imgcodecs.imread(uri_correct+correct_name);
+    	
+    	Imgproc.matchTemplate(im, tmp, result, Imgproc.TM_CCOEFF_NORMED);   	
+    	Core.MinMaxLocResult mmr = Core.minMaxLoc(result);
+    	
+    	System.out.println(mmr.maxVal);
+        
+    	if (mmr.maxVal > 0.4) 
+    		{
+    		 int[] point = { (int)(mmr.maxLoc.x + tmp.cols()/2), (int)(mmr.maxLoc.y + tmp.rows()/2)};
+    			return point;
+    		}
+    	else return null;	
+    }
+    
+    public boolean tapImage(String uri_image, String image_name) {
+    	int[] point = findImage(uri_image, image_name);
+    	if(point == null) {
+    		return false;
+    	}
+		tap(point[0], point[1]);
+		return true;
+    }
+    
+    private String capture() {
     	time = LocalDateTime.now();
     	String timestamp =  "" + time.getYear() + time.getMonthValue() + time.getDayOfMonth() + time.getHour() + time.getSecond();
     	try {

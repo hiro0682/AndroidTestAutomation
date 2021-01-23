@@ -42,9 +42,9 @@
 	
 	<Command id="verify_image">
 		<Class>AndroidTest</Class>
-		<input_n>1</input_n>
-		<input>image_URI</input>
-		<Instruction></Instruction>
+		<input_n>2</input_n>
+		<input>data1,data2</input>
+		<Instruction>Search image and return the point.(data1:correct image path, data2:correct image name)</Instruction>
 	</Command>
 	
 	<Command id="capture_image">
@@ -52,6 +52,13 @@
 		<input_n>0</input_n>
 		<input></input>
 		<Instruction>Capture image and return saved URI</Instruction>
+	</Command>
+	
+	<Command id="tap_image">
+		<Class>AndroidTest</Class>
+		<input_n>2</input_n>
+		<input>data1,data2</input>
+		<Instruction>Search image and tap the point.(data1:correct image path, data2:correct image name)</Instruction>
 	</Command>
 
 </CommandList>
