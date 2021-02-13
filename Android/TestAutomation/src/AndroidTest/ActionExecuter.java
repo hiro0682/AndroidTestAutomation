@@ -36,7 +36,6 @@ public class ActionExecuter {
 	}
 	
     public void executeList(ArrayList<Map<String,String>> arrayList) {
-    	System.out.println("test");
     	Log.init_logList();
     	if(arrayList == null) {
     		System.out.println("There is no data in ActionList");
@@ -157,7 +156,7 @@ public class ActionExecuter {
     	}
     }
     
-    public boolean verifyImage(String uri_correct, String correct_name) {
+    private boolean verifyImage(String uri_correct, String correct_name) {
     	Mat im = null;
     	Mat tmp = null;
     	Mat result = new Mat(new Size(1, 1), CvType.CV_32F);
@@ -176,7 +175,7 @@ public class ActionExecuter {
     	return false;	
     }
     
-    public int[] findImage(String uri_correct, String correct_name) {
+    private int[] findImage(String uri_correct, String correct_name) {
     	Mat im = null;
     	Mat tmp = null;
     	Mat result = new Mat(new Size(1, 1), CvType.CV_32F);
@@ -199,7 +198,7 @@ public class ActionExecuter {
     	else return null;	
     }
     
-    public boolean tapImage(String uri_image, String image_name) {
+    private boolean tapImage(String uri_image, String image_name) {
     	int[] point = findImage(uri_image, image_name);
     	if(point == null) {
     		return false;

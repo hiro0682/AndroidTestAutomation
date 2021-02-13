@@ -83,11 +83,11 @@ public class ActionList {
 	public void clearAction() {
 		init_actionList(actionList);
 	}
-	
-	public ArrayList<Map<String,String>> getActionList() {
+ 
+	public ArrayList<Map<String,String>> getActionList(){
 		return actionList;
 	}
-
+	
 	public int size() {
 		return actionList.size();
 	}

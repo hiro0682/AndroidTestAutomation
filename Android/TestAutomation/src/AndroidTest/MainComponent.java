@@ -22,6 +22,7 @@ public class MainComponent {
 	public static ActionList actionList;
 	
 	
+	/*
 	public static void main(String[] args) throws InterruptedException {
 		
 		
@@ -31,6 +32,7 @@ public class MainComponent {
 		actionList = new ActionList();
 		while(executeAction(selectAction()));
 	}
+	*/
 	
 	private static void init_commandList(Map<String,String> actionData) {
 		actionData.put("action", null);
