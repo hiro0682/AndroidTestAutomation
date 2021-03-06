@@ -70,13 +70,13 @@ public class ActionList {
 		init_actiondata(actionData);
 	}
 	
-	public void removeAction() {
+	public void removeAction(int id) {
 		if (actionList.isEmpty()) {
 			System.out.println("Action List has no action.");
 			return;
 		}
 		Map<String,String> removed = new HashMap<String,String>(actionList.get(0));
-		actionList.remove(0);
+		actionList.remove(id);
 		System.out.println("action" + removed + "has removed" );
 	}
 	

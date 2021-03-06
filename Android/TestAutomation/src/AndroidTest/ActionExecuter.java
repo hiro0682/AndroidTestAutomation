@@ -53,6 +53,7 @@ public class ActionExecuter {
     private void execCommand(Map<String, String> actionItem) {
     	int x,y,dx,dy,time;
     	String data1,data2;
+    	System.out.println("Execute"+actionItem);
     	switch(actionItem.get("action")) {
     	case "tap":
     		x = Integer.parseInt(actionItem.get("x_axis"));
@@ -122,8 +123,8 @@ public class ActionExecuter {
     
     private void longTap(int x_axis, int y_axis, int time) {
     	try {
-			process = runtime.exec("adb shell input swipe " + x_axis + " " + y_axis + " "  + x_axis + " " + y_axis + " " + time);
-			System.out.println("adb shell input swipe " + x_axis + " " + y_axis + " "  + x_axis + " " + y_axis + " " + time);
+			process = runtime.exec("adb shell input swipe " + x_axis + " " + y_axis + " "  + x_axis + " " + y_axis + " " + time*1000);
+			System.out.println("adb shell input swipe " + x_axis + " " + y_axis + " "  + x_axis + " " + y_axis + " " + time*1000);
 			process.waitFor();
 		} catch (IOException e) {
 			System.out.println("Error! IOException has occured! ");
@@ -176,6 +177,7 @@ public class ActionExecuter {
     }
     
     private int[] findImage(String uri_correct, String correct_name) {
+    	System.out.println("findImage#in");
     	Mat im = null;
     	Mat tmp = null;
     	Mat result = new Mat(new Size(1, 1), CvType.CV_32F);
@@ -193,29 +195,40 @@ public class ActionExecuter {
     	if (mmr.maxVal > 0.4) 
     		{
     		 int[] point = { (int)(mmr.maxLoc.x + tmp.cols()/2), (int)(mmr.maxLoc.y + tmp.rows()/2)};
+    		    System.out.println("findImage#out point:"+point);
     			return point;
     		}
-    	else return null;	
+    	else {
+    		System.out.println("findImage#out can't find image");
+    		return null;	
+    	}
     }
     
     private boolean tapImage(String uri_image, String image_name) {
+    	System.out.println("tapImage#in");
     	int[] point = findImage(uri_image, image_name);
     	if(point == null) {
     		return false;
     	}
+    	System.out.println("tap x:" + point[0] + " y:" + point[1]);
 		tap(point[0], point[1]);
+		System.out.println("tapImage#out");
 		return true;
     }
     
     private String capture() {
+    	System.out.println("capture#in");
     	time = LocalDateTime.now();
     	String timestamp =  "" + time.getYear() + time.getMonthValue() + time.getDayOfMonth() + time.getHour() + time.getSecond();
     	try {
+    		System.out.println("adb shell screencap -p /sdcard/" + timestamp + ".png");
     		process = runtime.exec("adb shell screencap -p /sdcard/" + timestamp + ".png");
     		process.waitFor();
+    		System.out.println("adb pull /sdcard/" + timestamp +".png " + "res/image/get/" + timestamp + ".png");
     		process = runtime.exec("adb pull /sdcard/" + timestamp +".png " + "res/image/get/" + timestamp + ".png" );
     		process.waitFor();
-    		process = runtime.exec("adb shell rm /sdcard/ " + timestamp + ".png");
+    		System.out.println("adb shell rm /sdcard/" + timestamp + ".png");
+    		process = runtime.exec("adb shell rm /sdcard/" + timestamp + ".png");
     		process.waitFor();    		
     	}catch(IOException e) {
     		System.out.println("Error! IOException has occured!");
@@ -224,6 +237,7 @@ public class ActionExecuter {
     		System.out.println("Error! InterruptedException has occured!");
     		e.printStackTrace();
     	}
+    	System.out.println("capture#out");
     	return "res/image/get/" + timestamp + ".png";
     }
 }

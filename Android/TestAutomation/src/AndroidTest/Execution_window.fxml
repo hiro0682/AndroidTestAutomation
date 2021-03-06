@@ -81,7 +81,7 @@
                                                 <Font size="10.0" />
                                              </font>
                                           </TextField>
-                                          <ImageView fx:id="imageView" fitHeight="83.0" fitWidth="158.0" layoutX="17.0" layoutY="261.0" onDragDropped="#handleDrop" onDragOver="#handleDragOver" pickOnBounds="true" preserveRatio="true" />
+                                          <ImageView fx:id="imageView" fitHeight="83.0" fitWidth="158.0" layoutX="17.0" layoutY="261.0" onDragDropped="#handleDrop" onDragOver="#handleDragOver" pickOnBounds="true" preserveRatio="true"/>
                                           <Label layoutX="5.0" layoutY="242.0" prefHeight="19.0" prefWidth="38.0" text="image" />
                                        </children>
                                     </AnchorPane>
